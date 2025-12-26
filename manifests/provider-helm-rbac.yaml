@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: provider-helm-sa
+  namespace: crossplane-system
+  labels:
+    app.kubernetes.io/name: provider-helm
+    app.kubernetes.io/component: provider
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: provider-helm-release-manager
+  labels:
+    app.kubernetes.io/name: provider-helm
+    app.kubernetes.io/component: provider
+rules:
+# Namespace management
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list", "create", "watch"]
+
+# ServiceAccount management
+- apiGroups: [""]
+  resources: ["serviceaccounts"]
+  verbs: ["get", "list", "create", "update", "patch", "watch"]
+
+# Secrets (for helm releases and credentials)
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "create", "update", "patch", "delete", "watch"]
+
+# ConfigMaps
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list", "create", "update", "patch", "delete", "watch"]
+
+# Pods (for readiness checks)
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+
+# Services
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "list", "create", "update", "patch", "delete", "watch"]
+
+# Deployments
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "create", "update", "patch", "delete", "watch"]
+
+# StatefulSets
+- apiGroups: ["apps"]
+  resources: ["statefulsets"]
+  verbs: ["get", "list", "create", "update", "patch", "delete", "watch"]
+
+# DaemonSets
+- apiGroups: ["apps"]
+  resources: ["daemonsets"]
+  verbs: ["get", "list", "create", "update", "patch", "delete", "watch"]
+
+# RBAC
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
+  verbs: ["get", "list", "create", "update", "patch", "delete", "watch"]
+
+# Ingress
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "create", "update", "patch", "delete", "watch"]
+
+# Custom Resources (for Crossplane and other operators)
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: provider-helm-release-manager-binding
+  labels:
+    app.kubernetes.io/name: provider-helm
+    app.kubernetes.io/component: provider
+subjects:
+- kind: ServiceAccount
+  name: provider-helm-sa
+  namespace: crossplane-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: provider-helm-release-manager
+
+---
+# Keep backward compatibility with the old provider-helm SA
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: provider-helm-legacy-permissions
+  labels:
+    app.kubernetes.io/name: provider-helm
+    app.kubernetes.io/component: legacy
+rules:
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list", "create", "watch"]
+- apiGroups: [""]
+  resources: ["serviceaccounts"]
+  verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: provider-helm-legacy-binding
+  labels:
+    app.kubernetes.io/name: provider-helm
+    app.kubernetes.io/component: legacy
+subjects:
+- kind: ServiceAccount
+  name: provider-helm-503c3591121b
+  namespace: crossplane-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: provider-helm-legacy-permissions
