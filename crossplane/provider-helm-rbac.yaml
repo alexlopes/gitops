@@ -76,6 +76,11 @@ rules:
   resources: ["customresourcedefinitions"]
   verbs: ["get", "list", "watch"]
 
+# Crossplane Package Resources
+- apiGroups: ["pkg.crossplane.io"]
+  resources: ["deploymentruntimeconfigs", "providers"]
+  verbs: ["get", "list", "watch"]
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

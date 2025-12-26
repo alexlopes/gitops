@@ -1,1 +1,4 @@
 notas-1.txt
+
+helm repo add crossplane-stable https://charts.crossplane.io/stable
+helm repo update

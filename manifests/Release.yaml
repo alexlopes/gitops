@@ -9,7 +9,7 @@ spec:
     chart:
       name: my-app
       repository: https://alexlopes.github.io/sre-playground
-      version: "0.1.4"
+      version: "0.1.6"
     namespace: sre-playground
   providerRef:
     name: default
