@@ -1,0 +1,15 @@
+apiVersion: helm.crossplane.io/v1beta1
+kind: Release
+metadata:
+  name: sre-playground-my-app
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  forProvider:
+    chart:
+      name: my-app
+      repository: https://alexlopes.github.io/sre-playground
+      version: "0.1.2"
+    namespace: sre-playground
+  providerRef:
+    name: default
