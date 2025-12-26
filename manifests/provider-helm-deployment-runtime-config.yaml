@@ -7,6 +7,6 @@ metadata:
     app.kubernetes.io/name: provider-helm
     app.kubernetes.io/component: provider-runtime
 spec:
-  deployment:
-    replicas: 1
-    serviceAccountName: provider-helm-sa
+  serviceAccountTemplate:
+    metadata:
+      name: provider-helm-sa
