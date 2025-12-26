@@ -1,0 +1,13 @@
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-helm
+  namespace: crossplane-system
+  labels:
+    app.kubernetes.io/name: provider-helm
+    app.kubernetes.io/component: provider
+spec:
+  package: xpkg.upbound.io/upbound/provider-helm:v0.1.0
+  packagePullPolicy: IfNotPresent
+  controllerConfigRef:
+    name: provider-runtime-config

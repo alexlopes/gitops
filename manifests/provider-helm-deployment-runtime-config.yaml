@@ -1,0 +1,12 @@
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: provider-runtime-config
+  namespace: crossplane-system
+  labels:
+    app.kubernetes.io/name: provider-helm
+    app.kubernetes.io/component: provider-runtime
+spec:
+  deployment:
+    replicas: 1
+    serviceAccountName: provider-helm-sa
