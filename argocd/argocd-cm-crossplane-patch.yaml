@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+data:
+  resource.customizations.health.pkg.crossplane.io_Provider: |
+    HealthStatusRule:
+    - check: |
+        obj.status.conditions != null &&
+        obj.status.conditions |
+        map(.type == "Installed" and .status == "True") |
+        any
+      result: Healthy
+    - check: |
+        obj.status.conditions != null &&
+        obj.status.conditions |
+        map(.type == "Healthy" and .status == "False") |
+        any
+      result: Degraded
+
+  resource.customizations.health.pkg.crossplane.io_ProviderRevision: |
+    HealthStatusRule:
+    - check: |
+        obj.status.conditions != null &&
+        obj.status.conditions |
+        map(.type == "Established" and .status == "True") |
+        any
+      result: Healthy
+    - check: |
+        obj.status.conditions != null &&
+        obj.status.conditions |
+        map(.type == "Active" and .status == "True") |
+        any
+      result: Healthy
+    - check: |
+        obj.status.conditions != null &&
+        obj.status.conditions |
+        map(.type == "Inactive" and .status == "True") |
+        any
+      result: Degraded
+
+  resource.customizations.health.apiextensions.crossplane.io_Composition: |
+    HealthStatusRule:
+    - check: |
+        obj.status.conditions != null &&
+        obj.status.conditions |
+        map(.type == "Established" and .status == "True") |
+        any
+      result: Healthy
+    - check: |
+        obj.status.conditions != null &&
+        obj.status.conditions |
+        map(.type == "Established" and .status == "False") |
+        any
+      result: Degraded
+
+  resource.customizations.health.apiextensions.crossplane.io_CompositeResourceDefinition: |
+    HealthStatusRule:
+    - check: |
+        obj.status.conditions != null &&
+        obj.status.conditions |
+        map(.type == "Established" and .status == "True") |
+        any
+      result: Healthy
+    - check: |
+        obj.status.conditions != null &&
+        obj.status.conditions |
+        map(.type == "Established" and .status == "False") |
+        any
+      result: Degraded
