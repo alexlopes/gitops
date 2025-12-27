@@ -69,3 +69,22 @@ data:
         map(.type == "Established" and .status == "False") |
         any
       result: Degraded
+
+  resource.customizations.helm.crossplane.io_Release: |
+    HealthStatusRule:
+    - check: |
+        obj.status == null
+      result: Progressing
+      message: Provisioning
+    - check: |
+        obj.status.conditions != null &&
+        obj.status.conditions |
+        map(.type == "Ready" and .status == "True") |
+        any
+      result: Healthy
+    - check: |
+        obj.status.conditions != null &&
+        obj.status.conditions |
+        map(.status == "False") |
+        any
+      result: Degraded
